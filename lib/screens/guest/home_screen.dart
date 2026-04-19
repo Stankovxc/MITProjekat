@@ -1,65 +1,171 @@
 import 'package:discover_herceg_novi/models/location_model.dart';
 import 'package:discover_herceg_novi/services/location_service.dart';
+import 'package:discover_herceg_novi/widgets/travel_card.dart';
 import 'package:flutter/material.dart';
-import 'package:discover_herceg_novi/widgets/location_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
+  String selectedCategory = 'All';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF00A8CC), Color(0xFFF4E3B2)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text(
-                  "Istraži Herceg Novi",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. HEADER: Naslov i Profilna
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        "Where do\nyou want to go?",
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                    const CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage(
+                        'https://via.placeholder.com/150',
+                      ), // Ovde ide slika usera
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 25),
+
+                // 2. SEARCH BAR
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
                     color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: const TextField(
+                    decoration: InputDecoration(
+                      hintText: "Discover city",
+                      border: InputBorder.none,
+                      suffixIcon: Icon(Icons.tune, color: Colors.grey),
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: StreamBuilder<List<LocationModel>>(
-                  stream: LocationService().getLocations(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                        child: Text("Nema pronađenih lokacija."),
-                      );
-                    }
+                const SizedBox(height: 30),
 
-                    final locations = snapshot.data!;
-
-                    return ListView.builder(
-                      itemCount: locations.length,
-                      itemBuilder: (context, index) {
-                        final loc = locations[index];
-                        return LocationCard(locationModel: loc);
-                      },
-                    );
-                  },
+                const Text(
+                  "Categories",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-              ),
-            ],
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildCategoryItem("All", Icons.all_inclusive),
+                    _buildCategoryItem("Tvrđava", Icons.terrain),
+                    _buildCategoryItem("Kula", Icons.beach_access),
+                    _buildCategoryItem("Park", Icons.park),
+                    _buildCategoryItem("City", Icons.location_city),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                // 3. EXPLORE SECTION & TABS
+                const Text(
+                  "Explore the City",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 15),
+
+                SizedBox(
+                  height: 250,
+                  child: StreamBuilder<List<LocationModel>>(
+                    stream: selectedCategory == 'All'
+                        ? LocationService().getLocations()
+                        : LocationService().getLocationsByCategory(
+                            selectedCategory,
+                          ),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        return const Center(child: CircularProgressIndicator());
+                      final locations = snapshot.data!;
+
+                      if (locations.isEmpty) {
+                        return const Center(
+                          child: Text("Nema lokacija u ovoj kategoriji."),
+                        );
+                      }
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: locations.length,
+                        itemBuilder: (context, index) {
+                          return TravelCard(loc: locations[index]);
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 30),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryItem(String label, IconData icon) {
+    bool isActive = selectedCategory == label;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedCategory = label; // Menjamo kategoriju i UI se osvežava
+        });
+      },
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              // Menjamo boju kruga ako je aktivan
+              color: isActive ? Colors.blue : Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+            child: Icon(icon, color: isActive ? Colors.white : Colors.blue),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
       ),
     );
   }
