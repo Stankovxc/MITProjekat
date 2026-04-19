@@ -11,6 +11,8 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   int _selectedIndex = 0;
+  String userRole = 'user'; // Početna vrednost
+  bool isLoading = true;
 
   // Lista ekrana koje prikazujemo
   final List<Widget> _screens = [const HomeScreen(), const AdminDashboard()];
@@ -24,7 +26,6 @@ class _MainWrapperState extends State<MainWrapper> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Prikazuje ekran na osnovu izabranog indeksa
       body: IndexedStack(index: _selectedIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

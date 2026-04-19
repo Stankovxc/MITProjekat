@@ -43,4 +43,34 @@ class AuthService {
       return null;
     }
   }
+
+  Future<String> getUserRole() async {
+    try {
+      User? user = _auth.currentUser;
+
+      if (user == null) {
+        return 'guest';
+      }
+
+      DocumentSnapshot doc = await _db.collection('users').doc(user.uid).get();
+
+      if (doc.exists && doc.data() != null) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        return data['role'] ?? 'guest';
+      }
+
+      return 'user';
+    } catch (e) {
+      print("Greška pri dobavljanju role: $e");
+      return 'guest';
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      print("Greška pri odjavi: $e");
+    }
+  }
 }

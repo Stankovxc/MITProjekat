@@ -22,7 +22,7 @@ class UserModel {
       name: data['name'] ?? '',
       profileImageUrl: data['profileImageUrl'] ?? '',
       phoneNumber: data['phoneNumber'] ?? '',
-      role: data['role'] ?? 'guest',
+      role: data['role'] ?? 'user',
     );
   }
 

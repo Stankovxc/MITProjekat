@@ -1,6 +1,8 @@
 import 'package:discover_herceg_novi/models/location_model.dart';
+import 'package:discover_herceg_novi/services/auth_service.dart';
 import 'package:discover_herceg_novi/services/location_service.dart';
 import 'package:discover_herceg_novi/widgets/travel_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,6 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
   String searchQuery = ""; // Čuva tekst koji korisnik kuca
   final TextEditingController _searchController = TextEditingController();
+  bool isGuest = FirebaseAuth.instance.currentUser == null;
+  AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. HEADER: Naslov i Profilna
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -39,11 +42,26 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    const CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/150',
-                      ), // Ovde ide slika usera
+                    GestureDetector(
+                      onTap: () async {
+                        if (!isGuest) {
+                          await authService.signOut();
+                        }
+
+                        if (!mounted) return;
+
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/splash',
+                          (route) => false,
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(
+                          'https://via.placeholder.com/150',
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -84,16 +102,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildCategoryItem("All", Icons.all_inclusive),
-                    _buildCategoryItem("Zabava", Icons.terrain),
-                    _buildCategoryItem("Plaža", Icons.beach_access),
-                    _buildCategoryItem("Kultura", Icons.park),
-                    _buildCategoryItem("Restorani", Icons.location_city),
-                  ],
-                ),
+                if (!isGuest)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildCategoryItem("All", Icons.all_inclusive),
+                      _buildCategoryItem("Zabava", Icons.terrain),
+                      _buildCategoryItem("Plaža", Icons.beach_access),
+                      _buildCategoryItem("Kultura", Icons.park),
+                      _buildCategoryItem("Restorani", Icons.location_city),
+                    ],
+                  ),
                 const SizedBox(height: 30),
 
                 const Text(
