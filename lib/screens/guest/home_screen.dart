@@ -11,6 +11,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
+  String searchQuery = ""; // Čuva tekst koji korisnik kuca
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 25),
 
-                // 2. SEARCH BAR
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
@@ -60,11 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-                  child: const TextField(
-                    decoration: InputDecoration(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        searchQuery = value.toLowerCase();
+                      });
+                    },
+                    decoration: const InputDecoration(
                       hintText: "Discover city",
                       border: InputBorder.none,
                       suffixIcon: Icon(Icons.tune, color: Colors.grey),
+                      prefixIcon: Icon(Icons.search, color: Colors.blue),
                     ),
                   ),
                 ),
@@ -79,14 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildCategoryItem("All", Icons.all_inclusive),
-                    _buildCategoryItem("Tvrđava", Icons.terrain),
-                    _buildCategoryItem("Kula", Icons.beach_access),
-                    _buildCategoryItem("Park", Icons.park),
-                    _buildCategoryItem("City", Icons.location_city),
+                    _buildCategoryItem("Zabava", Icons.terrain),
+                    _buildCategoryItem("Plaža", Icons.beach_access),
+                    _buildCategoryItem("Kultura", Icons.park),
+                    _buildCategoryItem("Restorani", Icons.location_city),
                   ],
                 ),
                 const SizedBox(height: 30),
-                // 3. EXPLORE SECTION & TABS
+
                 const Text(
                   "Explore the City",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
@@ -102,9 +111,25 @@ class _HomeScreenState extends State<HomeScreen> {
                             selectedCategory,
                           ),
                     builder: (context, snapshot) {
-                      if (!snapshot.hasData)
+                      if (!snapshot.hasData) {
                         return const Center(child: CircularProgressIndicator());
-                      final locations = snapshot.data!;
+                      }
+
+                      List<LocationModel> locations = snapshot.data!;
+
+                      if (searchQuery.isNotEmpty) {
+                        locations = locations
+                            .where(
+                              (loc) =>
+                                  loc.title.toLowerCase().contains(
+                                    searchQuery,
+                                  ) ||
+                                  loc.category.toLowerCase().contains(
+                                    searchQuery,
+                                  ),
+                            )
+                            .toList();
+                      }
 
                       if (locations.isEmpty) {
                         return const Center(
