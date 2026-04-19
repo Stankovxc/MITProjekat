@@ -1,4 +1,5 @@
 import 'package:discover_herceg_novi/screens/admin/add_location_screen.dart';
+import 'package:discover_herceg_novi/screens/admin/location_list_screen.dart';
 import 'package:discover_herceg_novi/widgets/admin_option.dart';
 import 'package:discover_herceg_novi/widgets/stat_card.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,12 @@ class AdminDashboard extends StatelessWidget {
                 subtitle: "Izmeni ili obriši postojeće podatke",
                 icon: Icons.edit_note,
                 onTap: () {
-                  // Ovde ćemo kasnije povezati listu za editovanje
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ManageLocationsScreen(),
+                    ),
+                  );
                 },
               ),
             ],

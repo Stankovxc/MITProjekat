@@ -32,4 +32,25 @@ class LocationService {
       rethrow;
     }
   }
+
+  Future<void> deleteLocation(String id) async {
+    try {
+      await _db.collection('locations').doc(id).delete();
+    } catch (e) {
+      print("Greška pri brisanju: $e");
+      rethrow;
+    }
+  }
+
+  Future<void> updateLocation(LocationModel location) async {
+    try {
+      await _db
+          .collection('locations')
+          .doc(location.id)
+          .update(location.toMap());
+    } catch (e) {
+      print("Greška pri izmeni: $e");
+      rethrow;
+    }
+  }
 }
