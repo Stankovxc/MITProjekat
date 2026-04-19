@@ -1,8 +1,55 @@
+import 'package:discover_herceg_novi/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  // Unutar tvog _LoginScreenState-a
+
+  final AuthService _authService = AuthService();
+  bool _isLoading = false;
+
+  final Map<String, TextEditingController> _controllers = {
+    'email': TextEditingController(),
+    'password': TextEditingController(),
+  };
+
+  void _handleLogin() async {
+    String email = _controllers['email']!.text.trim();
+    String password = _controllers['password']!.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showError("Molimo unesite email i lozinku");
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    User? user = await _authService.loginUser(email, password);
+
+    setState(() => _isLoading = false);
+
+    if (user != null) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
+    } else {
+      _showError("Neuspešna prijava. Proverite podatke.");
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +84,19 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
 
-                _inputField("Email Id", Icons.email),
+                _buildTextField(
+                  'email',
+                  'Email adresa',
+                  Icons.email,
+                  inputType: TextInputType.emailAddress,
+                ),
                 const SizedBox(height: 16),
-                _inputField("Password", Icons.lock, isPassword: true),
+                _buildTextField(
+                  'password',
+                  'Lozinka',
+                  Icons.lock,
+                  isObscure: true,
+                ),
 
                 const SizedBox(height: 8),
                 Align(
@@ -54,7 +111,9 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _handleLogin();
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 14),
@@ -100,22 +159,26 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Widget _inputField(String label, IconData icon, {bool isPassword = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label),
-        const SizedBox(height: 6),
-        TextField(
-          obscureText: isPassword,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
+  Widget _buildTextField(
+    String key,
+    String label,
+    IconData icon, {
+    bool isObscure = false,
+    TextInputType inputType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: _controllers[key],
+      obscureText: isObscure,
+      keyboardType: inputType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: const Color(0xFF004D40)),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF004D40), width: 2),
         ),
-      ],
+      ),
     );
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "103571405148",
+    "project_id": "discoverhercegnovi",
+    "storage_bucket": "discoverhercegnovi.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103571405148:android:5e6c7ade8bb1e880366999",
+        "android_client_info": {
+          "package_name": "com.example.discover_herceg_novi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-kXGQXMMV9IZl2ev-W3OMQE9_Iu2odag"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
