@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/admin');
+                    Navigator.pushNamed(context, '/register');
                   },
                   child: const Text.rich(
                     TextSpan(
