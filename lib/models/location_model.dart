@@ -1,6 +1,6 @@
 class LocationModel {
   final String id;
-  final String name;
+  final String title;
   final String description;
   final String category;
   final String imageUrl;
@@ -8,7 +8,7 @@ class LocationModel {
 
   LocationModel({
     required this.id,
-    required this.name,
+    required this.title,
     required this.description,
     required this.category,
     required this.imageUrl,
@@ -19,10 +19,19 @@ class LocationModel {
   factory LocationModel.fromMap(Map<String, dynamic> data, String documentId) {
     return LocationModel(
       id: documentId,
-      name: data['name'] ?? '',
+      title: data['title'] ?? '',
       description: data['description'] ?? '',
       category: data['category'] ?? 'Opšte',
       imageUrl: data['imageUrl'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'description': description,
+      'imageUrl': imageUrl,
+      'category': category,
+    };
   }
 }

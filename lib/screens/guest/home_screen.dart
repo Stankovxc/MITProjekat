@@ -1,3 +1,5 @@
+import 'package:discover_herceg_novi/models/location_model.dart';
+import 'package:discover_herceg_novi/services/location_service.dart';
 import 'package:flutter/material.dart';
 import 'package:discover_herceg_novi/widgets/location_card.dart';
 
@@ -22,28 +24,37 @@ class HomeScreen extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
-                  'Discover Herceg Novi',
+                  "Istraži Herceg Novi",
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(16.0),
-                  children: [
-                    LocationCard(
-                      title: 'Tvrđava Forte Mare',
-                      category: 'Znamenitost',
-                    ),
-                    LocationCard(title: 'Plaža Zanjice', category: 'Plaža'),
-                    LocationCard(
-                      title: 'Restoran Portun',
-                      category: 'Restoran',
-                    ),
-                  ],
+                child: StreamBuilder<List<LocationModel>>(
+                  stream: LocationService().getLocations(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text("Nema pronađenih lokacija."),
+                      );
+                    }
+
+                    final locations = snapshot.data!;
+
+                    return ListView.builder(
+                      itemCount: locations.length,
+                      itemBuilder: (context, index) {
+                        final loc = locations[index];
+                        return LocationCard(locationModel: loc);
+                      },
+                    );
+                  },
                 ),
               ),
             ],
