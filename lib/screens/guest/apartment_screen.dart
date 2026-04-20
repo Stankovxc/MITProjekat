@@ -140,7 +140,7 @@ class ApartmentDetailsScreen extends StatelessWidget {
   }
 
   Widget prikazMape(ApartmaneModel stan) {
-    // Koordinate stana
+    // Open Standard API
     final pozicijaStana = LatLng(
       stan.position.latitude,
       stan.position.longitude,

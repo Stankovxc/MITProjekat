@@ -1,5 +1,6 @@
 import 'package:discover_herceg_novi/models/user_model.dart';
 import 'package:discover_herceg_novi/services/auth_service.dart';
+import 'package:discover_herceg_novi/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -24,7 +25,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
-    // Obavezno čišćenje kontrolera
     for (var controller in _controllers.values) {
       controller.dispose();
     }
@@ -32,7 +32,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> _handleRegister() async {
-    // Osnovna validacija
     if (_controllers.values.any((c) => c.text.isEmpty)) {
       _showSnackBar("Molimo popunite sva polja");
       return;
@@ -40,9 +39,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
     setState(() => _isLoading = true);
 
-    // Kreiranje objekta na osnovu tvog modela
     UserModel newUser = UserModel(
-      id: '', // Biće dodeljen u AuthService-u preko UID-a
+      id: '',
       email: _controllers['email']!.text.trim(),
       name: _controllers['name']!.text.trim(),
       profileImageUrl: '', // Za sada prazno
@@ -75,69 +73,81 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pridruži se HN Explore"),
-        backgroundColor: const Color(0xFF004D40),
+        backgroundColor: const Color(0xFF1FA2B1),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  const Icon(Icons.explore, size: 80, color: Color(0xFF004D40)),
-                  const SizedBox(height: 32),
+      body: Container(
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1FA2B1), Color(0xFFEAD5C3)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SafeArea(
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.explore, size: 80, color: Colors.white),
+                      const SizedBox(height: 32),
 
-                  _buildTextField('name', 'Ime i prezime', Icons.person),
-                  const SizedBox(height: 16),
+                      _buildTextField('name', 'Ime i prezime', Icons.person),
+                      const SizedBox(height: 16),
 
-                  _buildTextField(
-                    'email',
-                    'Email adresa',
-                    Icons.email,
-                    inputType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 16),
+                      _buildTextField(
+                        'email',
+                        'Email adresa',
+                        Icons.email,
+                        inputType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 16),
 
-                  _buildTextField(
-                    'phone',
-                    'Broj telefona',
-                    Icons.phone,
-                    inputType: TextInputType.phone,
-                  ),
-                  const SizedBox(height: 16),
+                      _buildTextField(
+                        'phone',
+                        'Broj telefona',
+                        Icons.phone,
+                        inputType: TextInputType.phone,
+                      ),
+                      const SizedBox(height: 16),
 
-                  _buildTextField(
-                    'password',
-                    'Lozinka',
-                    Icons.lock,
-                    isObscure: true,
-                  ),
+                      _buildTextField(
+                        'password',
+                        'Lozinka',
+                        Icons.lock,
+                        isObscure: true,
+                      ),
 
-                  const SizedBox(height: 40),
+                      const SizedBox(height: 40),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: _handleRegister,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF004D40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 55,
+                        child: ElevatedButton(
+                          onPressed: _handleRegister,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            "KREIRAJ NALOG",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                      child: const Text(
-                        "KREIRAJ NALOG",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                ),
+        ),
+      ),
     );
   }
 
@@ -154,8 +164,13 @@ class _SignupScreenState extends State<SignupScreen> {
       keyboardType: inputType,
       decoration: InputDecoration(
         labelText: label,
+        filled: true,
+
         prefixIcon: Icon(icon, color: const Color(0xFF004D40)),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFF004D40), width: 2),
