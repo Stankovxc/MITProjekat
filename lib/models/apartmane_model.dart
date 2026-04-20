@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:latlong2/latlong.dart';
+
 class ApartmaneModel {
   final String id;
   final String title;
@@ -10,6 +13,7 @@ class ApartmaneModel {
   final int totalRatings;
   final double sumOfRatings;
   final List<String> ratedUsers;
+  final LatLng position;
 
   ApartmaneModel({
     required this.id,
@@ -23,9 +27,11 @@ class ApartmaneModel {
     required this.totalRatings,
     required this.sumOfRatings,
     required this.ratedUsers,
+    required this.position,
   });
 
   factory ApartmaneModel.fromMap(Map<String, dynamic> data, String id) {
+    GeoPoint geoPoint = data['location'] ?? const GeoPoint(42.4572, 18.5315);
     return ApartmaneModel(
       id: id,
       title: data['title'] ?? '',
@@ -38,6 +44,7 @@ class ApartmaneModel {
       totalRatings: data['totalRatings'] ?? 0,
       sumOfRatings: (data['sumOfRatings'] ?? 0.0).toDouble(),
       ratedUsers: List<String>.from(data['ratedUsers'] ?? []),
+      position: LatLng(geoPoint.latitude, geoPoint.longitude),
     );
   }
 }

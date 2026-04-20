@@ -2,6 +2,8 @@ import 'package:discover_herceg_novi/models/Apartmane_model.dart';
 import 'package:discover_herceg_novi/services/apartmanet_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class ApartmentDetailsScreen extends StatelessWidget {
   final String accommodationId;
@@ -90,7 +92,6 @@ class ApartmentDetailsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Sekcija za ostavljanje ocene
                 const Text("Ostavi svoju ocenu:"),
                 Row(
                   children: List.generate(5, (index) {
@@ -129,10 +130,60 @@ class ApartmentDetailsScreen extends StatelessWidget {
                     );
                   }),
                 ),
+                prikazMape(stan),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget prikazMape(ApartmaneModel stan) {
+    // Koordinate stana
+    final pozicijaStana = LatLng(
+      stan.position.latitude,
+      stan.position.longitude,
+    );
+
+    return Container(
+      height: 250,
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 15),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      clipBehavior: Clip.hardEdge,
+      child: FlutterMap(
+        options: MapOptions(
+          initialCenter: pozicijaStana,
+          initialZoom: 15.0,
+          interactionOptions: const InteractionOptions(
+            flags: InteractiveFlag
+                .all, //  .none Ovo onemogućava pomeranje mape prstom ako želiš da bude statična
+          ),
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.discover_herceg_novi',
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: pozicijaStana,
+                width: 80,
+                height: 80,
+                child: const Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                  size: 40,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
