@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/location_model.dart';
 import '../../services/location_service.dart';
-import './edit_location_screen.dart'; // Napravićemo ga u sledećem koraku
+import './edit_location_screen.dart';
 
 class ManageLocationsScreen extends StatelessWidget {
   const ManageLocationsScreen({super.key});

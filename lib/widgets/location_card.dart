@@ -23,9 +23,7 @@ class LocationCard extends StatelessWidget {
           ),
           subtitle: Text(locationModel.category),
           trailing: const Icon(Icons.arrow_forward_ios),
-          onTap: () {
-            // ovde će kasnije ići navigacija do detalja
-          },
+          onTap: () {},
         ),
       ),
     );

@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCategory = 'All';
+  String selectedCategory = 'Sve';
   String searchQuery = ""; // Čuva tekst koji korisnik kuca
   final TextEditingController _searchController = TextEditingController();
   bool isGuest = FirebaseAuth.instance.currentUser == null;
@@ -34,9 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     const Expanded(
                       child: Text(
-                        "Where do\nyou want to go?",
+                        "Gdje hoćete\nda idete danas?",
                         style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
                           height: 1.2,
                         ),
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       });
                     },
                     decoration: const InputDecoration(
-                      hintText: "Discover city",
+                      hintText: "Otkrijte mjesto",
                       border: InputBorder.none,
                       suffixIcon: Icon(Icons.tune, color: Colors.grey),
                       prefixIcon: Icon(Icons.search, color: Colors.blue),
@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 30),
 
                 const Text(
-                  "Categories",
+                  "Kategorije",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 15),
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildCategoryItem("All", Icons.all_inclusive),
+                      _buildCategoryItem("Sve", Icons.all_inclusive),
                       _buildCategoryItem("Zabava", Icons.terrain),
                       _buildCategoryItem("Plaža", Icons.beach_access),
                       _buildCategoryItem("Kultura", Icons.park),
@@ -116,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 30),
 
                 const Text(
-                  "Explore the City",
+                  "Istraži grad",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 15),
@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 250,
                   child: StreamBuilder<List<LocationModel>>(
-                    stream: selectedCategory == 'All'
+                    stream: selectedCategory == 'Sve'
                         ? LocationService().getLocations()
                         : LocationService().getLocationsByCategory(
                             selectedCategory,
@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          selectedCategory = label; // Menjamo kategoriju i UI se osvežava
+          selectedCategory = label;
         });
       },
       child: Column(
@@ -189,7 +189,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
-              // Menjamo boju kruga ako je aktivan
               color: isActive ? Colors.blue : Colors.white,
               shape: BoxShape.circle,
               boxShadow: [

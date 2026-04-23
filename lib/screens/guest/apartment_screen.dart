@@ -13,7 +13,7 @@ class ApartmentDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Detalji smeštaja")),
+      appBar: AppBar(title: const Text("Detalji smještaja")),
       body: StreamBuilder<ApartmaneModel>(
         stream: ApartmanetService().getAccommodation(accommodationId),
         builder: (context, snapshot) {
@@ -21,7 +21,7 @@ class ApartmentDetailsScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (!snapshot.hasData) {
-            return const Center(child: Text("Smeštaj nije pronađen."));
+            return const Center(child: Text("Smještaj nije pronađen."));
           }
 
           final stan = snapshot.data!;
@@ -74,62 +74,67 @@ class ApartmentDetailsScreen extends StatelessWidget {
                           Text(" do ${stan.capacity} osobe"),
                         ],
                       ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber),
+                          Text(
+                            "${stan.rating} (${stan.totalRatings} ocjena)",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+
+                      const Text("Ostavi svoju ocjenu:"),
+                      Row(
+                        children: List.generate(5, (index) {
+                          return IconButton(
+                            icon: Icon(
+                              index < 4 ? Icons.star : Icons.star_border,
+                              color: Colors.amber,
+                            ),
+                            onPressed: () async {
+                              if (FirebaseAuth.instance.currentUser == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Samo ulogovani korisnici mogu ocjenjivati!",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              try {
+                                await ApartmanetService().rateApartment(
+                                  stan.id,
+                                  index + 1,
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Hvala na ocjeni!"),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Već ste ocjenili ovaj smještaj!",
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        }),
+                      ),
                     ],
                   ),
                 ),
 
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber),
-                    Text(
-                      "${stan.rating} (${stan.totalRatings} ocena)",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                const Text("Ostavi svoju ocenu:"),
-                Row(
-                  children: List.generate(5, (index) {
-                    return IconButton(
-                      icon: Icon(
-                        index < 3 ? Icons.star : Icons.star_border,
-                        color: Colors.amber,
-                      ),
-                      onPressed: () async {
-                        if (FirebaseAuth.instance.currentUser == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Samo ulogovani korisnici mogu ocenjivati!",
-                              ),
-                            ),
-                          );
-                          return;
-                        }
-                        try {
-                          await ApartmanetService().rateApartment(
-                            stan.id,
-                            index + 1,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Hvala na oceni!")),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Već ste ocenili ovaj smeštaj!"),
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  }),
-                ),
                 prikazMape(stan),
               ],
             ),
@@ -147,7 +152,7 @@ class ApartmentDetailsScreen extends StatelessWidget {
     );
 
     return Container(
-      height: 250,
+      height: 400,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
@@ -161,7 +166,7 @@ class ApartmentDetailsScreen extends StatelessWidget {
           initialZoom: 15.0,
           interactionOptions: const InteractionOptions(
             flags: InteractiveFlag
-                .all, //  .none Ovo onemogućava pomeranje mape prstom ako želiš da bude statična
+                .all, //  .none Ovo onemogućava pomeranje mape prstom
           ),
         ),
         children: [

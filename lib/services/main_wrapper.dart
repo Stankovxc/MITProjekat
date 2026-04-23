@@ -12,10 +12,9 @@ class MainWrapper extends StatefulWidget {
 
 class _MainWrapperState extends State<MainWrapper> {
   int _selectedIndex = 0;
-  String userRole = 'user'; // Početna vrednost
+  String userRole = 'user';
   bool isLoading = true;
 
-  // Lista ekrana koje prikazujemo
   final List<Widget> _screens = [
     const HomeScreen(),
     const ApartmentDetailsScreen(accommodationId: "1"),
@@ -35,7 +34,7 @@ class _MainWrapperState extends State<MainWrapper> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: const Color(0xFF00A8CC), // Tvoja plava boja
+        selectedItemColor: const Color(0xFF00A8CC),
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Početna'),

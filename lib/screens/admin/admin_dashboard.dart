@@ -53,7 +53,6 @@ class AdminDashboard extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
 
-                    // Kartice sa statistikom
                     Row(
                       children: [
                         StatCard(

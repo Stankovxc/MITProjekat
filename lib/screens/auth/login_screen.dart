@@ -11,8 +11,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Unutar tvog _LoginScreenState-a
-
   final AuthService _authService = AuthService();
   bool _isLoading = false;
 
@@ -126,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 1, 53, 53),
                       ),
                     ),
                   ),

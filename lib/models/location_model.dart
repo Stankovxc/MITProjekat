@@ -15,14 +15,15 @@ class LocationModel {
     this.isFavorite = false,
   });
 
-  // Ovo nam treba da bismo podatke iz baze (JSON) pretvorili u Dart objekat
   factory LocationModel.fromMap(Map<String, dynamic> data, String documentId) {
     return LocationModel(
       id: documentId,
       title: data['title'] ?? '',
       description: data['description'] ?? '',
       category: data['category'] ?? 'Opšte',
-      imageUrl: data['imageUrl'] ?? '',
+      imageUrl:
+          data['imageUrl'] ??
+          'https://res.cloudinary.com/dwu1svahl/image/upload/v1760216817/main-sample.png',
     );
   }
 

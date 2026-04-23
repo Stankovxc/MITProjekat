@@ -12,7 +12,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  // Grupisanje kontrolera radi preglednosti
   final Map<String, TextEditingController> _controllers = {
     'name': TextEditingController(),
     'email': TextEditingController(),
@@ -72,7 +71,7 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pridruži se HN Explore"),
+        title: const Text("Pridruži se HN ekipi"),
         backgroundColor: const Color(0xFF1FA2B1),
       ),
       body: Container(

@@ -26,7 +26,7 @@ class ApartmanetService {
 
       List<String> ratedUsers = List<String>.from(snapshot['ratedUsers'] ?? []);
       if (ratedUsers.contains(user.uid)) {
-        throw Exception("Već ste ocenili ovaj smeštaj!");
+        throw Exception("Već ste ocjenili ovaj smještaj!");
       }
 
       int totalRatings = snapshot['totalRatings'] ?? 0;
