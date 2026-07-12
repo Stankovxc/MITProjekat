@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:discover_herceg_novi/screens/guest/availability_calendar_screen.dart';
 
 class ApartmentDetailsScreen extends StatelessWidget {
   final String accommodationId;
@@ -87,6 +88,36 @@ class ApartmentDetailsScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.calendar_month),
+                          label: const Text(
+                            'Rezervišite',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AvailabilityCalendarScreen(
+                                      apartmentId: stan.id,
+                                      apartmentTitle: stan.title,
+                                      pricePerNight: stan.pricePerNight,
+                                      imageUrl: stan.imageUrl,
+                                      rating: stan.rating,
+                                      capacity: stan.capacity,
+                                      hasWifi: stan.hasWifi,
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
                       const SizedBox(height: 20),
 
                       const Text("Ostavi svoju ocjenu:"),
