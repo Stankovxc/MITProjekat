@@ -126,7 +126,9 @@ class _AdminSeasonPricesScreenState extends State<AdminSeasonPricesScreen> {
               size: 30,
             ),
           ),
+
           const SizedBox(width: 14),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

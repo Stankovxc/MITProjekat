@@ -44,4 +44,17 @@ class ApartmanetService {
       });
     });
   }
+
+  Future<void> updateBasePrice({
+    required String apartmentId,
+    required double newPrice,
+  }) async {
+    if (newPrice <= 0) {
+      throw Exception('Cijena mora biti veća od nule.');
+    }
+
+    await _db.collection('apartmants').doc(apartmentId).update({
+      'pricePerNight': newPrice,
+    });
+  }
 }
