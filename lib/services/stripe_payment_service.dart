@@ -10,7 +10,7 @@ class StripePaymentResult {
 }
 
 class StripePaymentService {
-  static const String _baseUrl = 'http://10.217.249.120:3000';
+  static const String _baseUrl = 'http://192.168.0.27:3000';
 
   Future<StripePaymentResult> makePayment({
     required double amount,

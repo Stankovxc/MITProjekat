@@ -6,6 +6,7 @@ import 'package:discover_herceg_novi/screens/user/booking_summary_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:discover_herceg_novi/models/season_price_model.dart';
 import 'package:discover_herceg_novi/services/season_price_service.dart';
+import 'package:discover_herceg_novi/services/auth_service.dart';
 
 class AvailabilityCalendarScreen extends StatefulWidget {
   final String apartmentId;
@@ -730,6 +731,20 @@ class _AvailabilityCalendarScreenState
                           const SnackBar(
                             content: Text(
                               'Morate se prijaviti da biste nastavili sa rezervacijom.',
+                            ),
+                          ),
+                        );
+                        return;
+                      }
+
+                      final role = await AuthService().getUserRole();
+                      if (role == 'admin') {
+                        if (!context.mounted) return;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Administratorski nalog ne može praviti rezervacije.',
                             ),
                           ),
                         );
